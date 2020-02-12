@@ -5,8 +5,9 @@ import (
 	"nideshop-admin/controller/servers"
 	"nideshop-admin/model/dbModel"
 	"nideshop-admin/model/modelInterface"
-	"github.com/gin-gonic/gin"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // @Tags ExaFileUploadAndDownload
@@ -24,7 +25,9 @@ func UploadFile(c *gin.Context) {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
 		//文件上传后拿到文件路径
-		err, filePath, key := servers.Upload(header, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
+		err, filePath, key := servers.Upload(header, USER_HEADER_BUCKET)
+		fmt.Println(filePath)
+		fmt.Println(key)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {

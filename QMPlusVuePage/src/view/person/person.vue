@@ -6,6 +6,7 @@
         :on-success="handleAvatarSuccess"
         :show-file-list="false"
         :action="`${path}/user/uploadHeaderImg`"
+        :data="{'imgsrc':userInfo.headerImg}"
         class="avatar-uploader"
         name="headerImg"
       >
@@ -23,25 +24,25 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
-const path = process.env.VUE_APP_BASE_API
+import { mapGetters, mapMutations } from "vuex";
+const path = process.env.VUE_APP_BASE_API;
 export default {
-  name: 'Person',
-  data(){
+  name: "Person",
+  data() {
     return {
-      path:path
-    }
+      path: path
+    };
   },
   computed: {
-    ...mapGetters('user', ['userInfo', 'token'])
+    ...mapGetters("user", ["userInfo", "token"])
   },
-  methods:{
-    ...mapMutations('user',['ResetUserInfo']),
-      handleAvatarSuccess(res){
-        this.ResetUserInfo({headerImg:res.data.user.headerImg})
-      }
+  methods: {
+    ...mapMutations("user", ["ResetUserInfo"]),
+    handleAvatarSuccess(res) {
+      this.ResetUserInfo({ headerImg: res.data.user.headerImg });
+    }
   }
-}
+};
 </script>
 <style lang="scss">
 .avatar-uploader .el-upload {

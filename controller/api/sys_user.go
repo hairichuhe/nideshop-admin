@@ -2,22 +2,23 @@ package api
 
 import (
 	"fmt"
+	"mime/multipart"
 	"nideshop-admin/config"
 	"nideshop-admin/controller/servers"
 	"nideshop-admin/middleware"
 	"nideshop-admin/model/modelInterface"
 	"nideshop-admin/model/sysModel"
+	"nideshop-admin/tools"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	uuid "github.com/satori/go.uuid"
-	"mime/multipart"
-	"time"
 )
 
 var (
-	USER_HEADER_IMG_PATH string = "http://qmplusimg.henrongyi.top"
-	USER_HEADER_BUCKET   string = "qm-plus-img"
+	USER_HEADER_BUCKET string = "qm-plus-img"
 )
 
 type RegistAndLoginStuct struct {
@@ -170,12 +171,24 @@ func UploadHeaderImg(c *gin.Context) {
 	waitUse := claims.(*middleware.CustomClaims)
 	uuid := waitUse.UUID
 	_, header, err := c.Request.FormFile("headerImg")
+	imgsrc := c.PostForm("imgsrc")
+
+	if imgsrc != "" {
+		imgkeg := tools.GetFileName(imgsrc)
+
+		fmt.Println(imgkeg)
+		err := servers.DeleteFile(USER_HEADER_BUCKET, imgkeg)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("文件删除失败，%v", err), gin.H{})
+		}
+	}
+
 	//便于找到用户 以后从jwt中取
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
 		//文件上传后拿到文件路径
-		err, filePath, _ := servers.Upload(header, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
+		err, filePath, _ := servers.Upload(header, USER_HEADER_BUCKET)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {

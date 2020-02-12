@@ -2,13 +2,14 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
 	MysqlAdmin   MysqlAdmin   `json:"mysqlAdmin"`
-	Qiniu        Qiniu        `json:"qiniu"`
+	UpLoad       UpLoad       `json:"upload"`
 	CasbinConfig CasbinConfig `json:"casbinConfig"`
 	RedisAdmin   RedisAdmin   `json:"redisAdmin"`
 	System       System       `json:"system"`
@@ -42,9 +43,9 @@ type RedisAdmin struct { // Redis admin 数据库配置
 	Password string `json:"password"`
 	DB       int    `json:"db"`
 }
-type Qiniu struct { // 七牛 密钥配置
-	AccessKey string `json:"accessKey"`
-	SecretKey string `json:"secretKey"`
+type UpLoad struct { // 文件上传配置
+	Domain string `json:"domain"`
+	Path   string `json:"path"`
 }
 
 var GinVueAdminconfig Config
